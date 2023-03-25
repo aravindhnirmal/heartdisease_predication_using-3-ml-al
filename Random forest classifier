@@ -1,0 +1,54 @@
+#Random forest classifier import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Load the dataset IN JUPYTER
+dataset = pd.read_csv(r'F:\sem-6\miniproone\dataset.csv')
+-------------------------------------------------------
+#USE THIS BELOW CODE IF U R USING COLAB
+# Mount Google Drive to access dataset
+#from google.colab import drive
+#drive.mount('/content/drive')
+
+# Load the heart disease dataset we have the dataset in any folder in our pc 
+#this allow our drive and connect 
+#data = pd.read_csv('/content/dataset.csv')
+------------------------------------------------
+# Replace '?' values with NaN and drop those rows
+dataset = dataset.replace('?', pd.np.nan)
+dataset = dataset.dropna()
+
+# Split the data into X and y
+X = dataset.iloc[:, :-1].values
+y = dataset.iloc[:, -1].values
+
+# Scale the features
+scaler = StandardScaler()
+X = scaler.fit_transform(X)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=0)
+
+# Initialize the random forest classifier
+rf_classifier = RandomForestClassifier(n_estimators=5, random_state=0)
+
+# Fit the model to the training data
+rf_classifier.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = rf_classifier.predict(X_test)
+
+# Evaluate the model's performance
+score = rf_classifier.score(X_test, y_test)
+print('Accuracy:', score)
+
+# Use the model to predict for new data
+new_patient = [[50,1,0,150,243,0,0,128,0,2.6,1,0,3
+]]
+new_patient = scaler.transform(new_patient)
+prediction = rf_classifier.predict(new_patient)
+if prediction == 0:
+    print('The patient does not have heart disease.')
+else:
+    print('The patient has heart disease.')
